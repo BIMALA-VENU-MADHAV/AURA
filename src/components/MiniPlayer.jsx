@@ -28,8 +28,10 @@ function MiniPlayer() {
       initial={{ y: 100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.4 }}
-      onClick={() => setIsPlayerOpen(true)}
-      className="fixed bottom-4 left-1/2 -translate-x-1/2 w-[95%] max-w-5xl h-24 rounded-3xl bg-white/10 backdrop-blur-2xl border border-white/10 px-6 flex items-center justify-between z-40 shadow-2xl cursor-pointer"
+      onClick={() =>
+        setIsPlayerOpen(true)
+      }
+      className="fixed bottom-4 left-1/2 -translate-x-1/2 w-[95%] max-w-5xl h-20 md:h-24 rounded-3xl bg-white/10 backdrop-blur-2xl border border-white/10 px-4 md:px-6 flex items-center justify-between z-40 shadow-2xl cursor-pointer"
     >
 
       {/* Left */}
@@ -48,16 +50,16 @@ function MiniPlayer() {
           }}
           src={currentSong.image}
           alt={currentSong.title}
-          className="w-16 h-16 rounded-2xl object-cover"
+          className="w-12 h-12 md:w-16 md:h-16 rounded-2xl object-cover"
         />
 
         <div>
 
-          <h2 className="font-semibold text-lg">
+          <h2 className="font-semibold text-sm md:text-lg">
             {currentSong.title}
           </h2>
 
-          <p className="text-zinc-300">
+          <p className="text-zinc-300 text-xs md:text-base">
             {currentSong.artist}
           </p>
 
@@ -66,7 +68,7 @@ function MiniPlayer() {
       </div>
 
       {/* Right */}
-      <div className="flex items-center gap-5">
+      <div className="flex items-center gap-3 md:gap-5">
 
         {/* Favorite */}
         <button
@@ -87,13 +89,13 @@ function MiniPlayer() {
 
         </button>
 
-        {/* Play Pause */}
+        {/* Play */}
         <button
           onClick={(e) => {
             e.stopPropagation()
             togglePlay()
           }}
-          className="bg-white text-black w-14 h-14 rounded-full flex items-center justify-center"
+          className="bg-white text-black w-12 h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center"
         >
 
           {isPlaying ? (

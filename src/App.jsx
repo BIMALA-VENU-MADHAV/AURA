@@ -10,6 +10,8 @@ import MiniPlayer from "./components/MiniPlayer"
 
 import FullPlayer from "./components/FullPlayer"
 
+import Search from "./pages/Search"
+
 import Home from "./pages/Home"
 
 import Favorites from "./pages/Favorites"
@@ -33,6 +35,11 @@ function App() {
           <Route
             path="/favorites"
             element={<Favorites />}
+          />
+
+          <Route
+            path="/search"
+            element={<Search />}
           />
 
         </Routes>

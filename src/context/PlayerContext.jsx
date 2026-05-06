@@ -15,20 +15,33 @@ export const PlayerProvider = ({ children }) => {
   const audioRef = useRef(new Audio())
 
   const [currentSong, setCurrentSong] = useState(null)
-  const [isPlaying, setIsPlaying] = useState(false)
 
-  const [currentTime, setCurrentTime] = useState(0)
-  const [duration, setDuration] = useState(0)
+  const [isPlaying, setIsPlaying] =
+    useState(false)
+
+  const [currentTime, setCurrentTime] =
+    useState(0)
+
+  const [duration, setDuration] =
+    useState(0)
 
   const [songs, setSongs] = useState([])
-  const [currentIndex, setCurrentIndex] = useState(0)
 
-  const [isPlayerOpen, setIsPlayerOpen] = useState(false)
+  const [currentIndex, setCurrentIndex] =
+    useState(0)
+
+  const [isPlayerOpen, setIsPlayerOpen] =
+    useState(false)
 
   // Favorites
-  const [favorites, setFavorites] = useState([])
+  const [favorites, setFavorites] =
+    useState([])
 
-  // Load favorites
+  // Recently Played
+  const [recentSongs, setRecentSongs] =
+    useState([])
+
+  // Load Favorites
   useEffect(() => {
 
     const saved =
@@ -40,7 +53,7 @@ export const PlayerProvider = ({ children }) => {
 
   }, [])
 
-  // Save favorites
+  // Save Favorites
   useEffect(() => {
 
     localStorage.setItem(
@@ -50,7 +63,29 @@ export const PlayerProvider = ({ children }) => {
 
   }, [favorites])
 
-  // Progress Tracking
+  // Load Recent Songs
+  useEffect(() => {
+
+    const saved =
+      JSON.parse(
+        localStorage.getItem("recentSongs")
+      ) || []
+
+    setRecentSongs(saved)
+
+  }, [])
+
+  // Save Recent Songs
+  useEffect(() => {
+
+    localStorage.setItem(
+      "recentSongs",
+      JSON.stringify(recentSongs)
+    )
+
+  }, [recentSongs])
+
+  // Track Progress
   useEffect(() => {
 
     const audio = audioRef.current
@@ -103,6 +138,21 @@ export const PlayerProvider = ({ children }) => {
     setIsPlaying(true)
 
     setIsPlayerOpen(true)
+
+    // Add to Recently Played
+    setRecentSongs((prev) => {
+
+      const filtered =
+        prev.filter(
+          (item) => item.id !== song.id
+        )
+
+      return [
+        song,
+        ...filtered,
+      ].slice(0, 10)
+
+    })
   }
 
   // Pause
@@ -114,7 +164,7 @@ export const PlayerProvider = ({ children }) => {
 
   }
 
-  // Toggle
+  // Toggle Play
   const togglePlay = () => {
 
     if (!currentSong) return
@@ -224,6 +274,7 @@ export const PlayerProvider = ({ children }) => {
         favorites,
         toggleFavorite,
         isFavorite,
+        recentSongs,
       }}
     >
       {children}
