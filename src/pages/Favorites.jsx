@@ -1,8 +1,11 @@
+import {useEffect,useState} from "react"
 import {Link} from "react-router-dom"
 
 import SongCard from "../components/SongCard"
 
 import {usePlayer} from "../context/PlayerContext"
+
+import supabase from "../lib/supabase"
 
 function Favorites(){
 
@@ -11,6 +14,32 @@ function Favorites(){
     currentSong,
     isPlaying,
   }=usePlayer()
+
+  const [profile,setProfile]=
+    useState(null)
+
+  useEffect(()=>{
+    getProfile()
+  },[])
+
+  const getProfile=async()=>{
+
+    const {
+      data:{user},
+    }=await supabase.auth.getUser()
+
+    if(!user)return
+
+    const {data}=
+      await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id",user.id)
+        .single()
+
+    setProfile(data)
+
+  }
 
   const formattedSongs=
     favorites.map((song)=>({
@@ -39,20 +68,46 @@ function Favorites(){
 
         </div>
 
-        <Link
-        to="/profile"
-        className="
-        w-12 h-12 rounded-full
-        overflow-hidden
-        bg-white/10
-        flex items-center justify-center
-        text-lg font-semibold
-        shrink-0
-        cursor-pointer
-        "
-        >
-          P
-        </Link>
+        {/* Profile */}
+        {profile&&(
+
+          <Link
+          to="/profile"
+          className="cursor-pointer"
+          >
+
+            {profile.avatar_url?(
+
+              <img
+              src={profile.avatar_url}
+              alt="profile"
+              className="
+              w-14 h-14
+              rounded-full
+              object-cover
+              border border-white/10
+              "
+              />
+
+            ):(
+
+              <div
+              className="
+              w-14 h-14
+              rounded-full
+              bg-white/10
+              flex items-center justify-center
+              text-lg font-semibold
+              "
+              >
+                {profile?.name?.[0]}
+              </div>
+
+            )}
+
+          </Link>
+
+        )}
 
       </div>
 
