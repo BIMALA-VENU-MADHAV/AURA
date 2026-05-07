@@ -1,30 +1,49 @@
 import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
+
 import supabase from "../lib/supabase"
+
 import songs from "../data/songs"
+
 import SongCard from "../components/SongCard"
 
 function Home() {
-  const [profile, setProfile] = useState(null)
+
+  const [profile, setProfile] =
+    useState(null)
+
+  const [loggedIn, setLoggedIn] =
+    useState(false)
 
   useEffect(() => {
     getProfile()
   }, [])
 
   const getProfile = async () => {
+
     const {
       data: { user },
     } = await supabase.auth.getUser()
 
-    if (!user) return
+    // Not logged in
+    if (!user) {
 
-    const { data } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("id", user.id)
-      .single()
+      setLoggedIn(false)
+      return
+
+    }
+
+    setLoggedIn(true)
+
+    const { data } =
+      await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", user.id)
+        .single()
 
     setProfile(data)
+
   }
 
   return (
@@ -35,9 +54,14 @@ function Home() {
 
         <div>
 
-          <p className="text-zinc-500 text-sm uppercase tracking-[5px] mb-3">
-            Welcome Back
-          </p>
+          {/* Show ONLY if logged in */}
+          {loggedIn && (
+
+            <p className="text-zinc-500 text-sm uppercase tracking-[5px] mb-3">
+              Welcome Back
+            </p>
+
+          )}
 
           <h1 className="text-5xl md:text-7xl font-bold tracking-tight">
             Aura
@@ -45,22 +69,39 @@ function Home() {
 
         </div>
 
+        {/* Profile */}
         {profile && (
 
-          <Link to="/profile">
+          <Link
+            to="/profile"
+            className="cursor-pointer"
+          >
 
             {profile.avatar_url ? (
 
               <img
                 src={profile.avatar_url}
                 alt="profile"
-                className="w-14 h-14 rounded-full object-cover border border-white/10"
+                className="
+                  w-14 h-14
+                  rounded-full
+                  object-cover
+                  border border-white/10
+                "
               />
 
             ) : (
 
-              <div className="w-14 h-14 rounded-full bg-white/10 flex items-center justify-center text-lg font-semibold">
-                {profile.name[0]}
+              <div
+                className="
+                  w-14 h-14
+                  rounded-full
+                  bg-white/10
+                  flex items-center justify-center
+                  text-lg font-semibold
+                "
+              >
+                {profile?.name?.[0]}
               </div>
 
             )}

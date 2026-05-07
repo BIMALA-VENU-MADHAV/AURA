@@ -13,11 +13,11 @@ function Layout() {
   const location = useLocation()
 
   const isAuthPage =
-    location.pathname === "/login" ||
+    location.pathname === "/login" || 
     location.pathname === "/signup"
 
   return (
-    <div className="flex bg-black text-white min-h-screen">
+    <div className="flex h-screen overflow-hidden bg-black text-white">
       {!isAuthPage && <Sidebar />}
 
       <Routes>
