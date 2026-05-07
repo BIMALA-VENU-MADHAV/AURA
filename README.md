@@ -1,16 +1,48 @@
-# React + Vite
+# Aura 🎵
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Aura is a modern and minimal music player built with React and Tailwind CSS.
 
-Currently, two official plugins are available:
+Inspired by Apple Music’s clean aesthetic, Aura focuses on a smooth, immersive, and elegant music experience with fullscreen playback, favorites, search, and responsive design.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## ✨ Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- 🎧 Fullscreen music player
+- ❤️ Favorites system
+- 🔍 Search songs & artists
+- 📱 Fully responsive UI
+- 🎵 Auto next song playback
+- 🌑 Minimal dark aesthetic
+- ⚡ Smooth animations with Framer Motion
+- 💾 Persistent favorites using localStorage
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 🛠 Tech Stack
+
+- React JS
+- Tailwind CSS
+- Framer Motion
+- React Router DOM
+- Lucide React Icons
+- Vite
+
+
+---
+
+
+## 🔮 Future Improvements
+
+- Lyrics support
+- Playlist creation
+- Cloud sync
+- Audio visualizer
+- Theme customization
+- Upload local songs
+
+---
+
+## 👨‍💻 Author
+
+Built with ❤️ using React & Tailwind CSS.
