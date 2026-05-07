@@ -22,7 +22,7 @@ function Layout(){
 
       {/* Sidebar */}
       {!isAuthPage&&(
-        <div className="w-32 h-screen shrink-0">
+        <div>
           <Sidebar/>
         </div>
       )}
