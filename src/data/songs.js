@@ -4,9 +4,9 @@ const songs = [
     title: "Fendi 2",
     artist: "Rakhim Abramov",
     image:
-      "Fendi.jpg",
+      "/image/Fendi.jpg",
     audio:
-      "Fendi.mp3",
+      "/audio/Fendi.mp3",
   },
 
   {
@@ -14,9 +14,9 @@ const songs = [
     title: "MONTAGEM ALQUIMIA",
     artist: "Mc Menor Da Alvorada",
     image:
-      "Montagem-Alquimia.jpg ",
+      "/image/Montagem-Alquimia.jpg ",
     audio:
-      "MONTAGEM-ALQUIMIA.mp3",
+      "/audio/MONTAGEM-ALQUIMIA.mp3",
   },
 
   {
@@ -24,9 +24,9 @@ const songs = [
     title: "HONOUR",
     artist: "NX!ZE",
     image:
-      "HONOUR.jpg",
+      "/image/HONOUR.jpg",
     audio:
-      "HONOUR-Slowed.mp3",
+      "/audio/HONOUR-Slowed.mp3",
   },
 
   {
@@ -34,18 +34,18 @@ const songs = [
     title: "NO BATIDÃO(Slowed)",
     artist: "ZXKAI",
     image:
-      "NO-BATIDAO.jpg",
+      "/image/NO-BATIDAO.jpg",
     audio:
-      "NO-BATIDÃO.mp3",
+      "/audio/NO-BATIDÃO.mp3",
   },
   {
     id: 5,
     title: "八方來財(Stacks from All Sides) - Slowed",
     artist: "neonelle",
     image:
-      "Stacks-from-All-Sides.jpg",
+      "/image/Stacks-from-All-Sides.jpg",
     audio:
-      "八方來財(Stacks from All Sides).mp3",
+      "/audio/八方來財(Stacks from All Sides).mp3",
   }, 
 
   {
@@ -53,9 +53,9 @@ const songs = [
     title: "Feel Good Inc.",
     artist: "Gorillaz, De La Soul",
     image:
-      "Feel-Good-Inc.jpg",
+      "/image/Feel-Good-Inc.jpg",
     audio:
-      "Feel Good Inc..mp3",
+      "/audio/Feel Good Inc..mp3",
   }, 
 
   {
@@ -63,9 +63,9 @@ const songs = [
     title: "2 Dangerous",
     artist: "Rarin",
     image:
-      "2 Dangerous.jpg",
+      "/image/2 Dangerous.jpg",
     audio:
-      "2 Dangerous.mp3",
+      "/audio/2 Dangerous.mp3",
   }, 
 ]
 
