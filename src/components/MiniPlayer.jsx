@@ -21,6 +21,10 @@ function MiniPlayer() {
     isFavorite,
   } = usePlayer()
 
+  const favorite =
+    currentSong &&
+    isFavorite(currentSong)
+
   // Hide if no song selected
   if (!currentSong) return null
 
@@ -80,13 +84,18 @@ function MiniPlayer() {
 
             toggleFavorite(currentSong)
           }}
-          className="text-zinc-400 hover:text-white transition"
+          className="
+            text-zinc-400
+            hover:text-white
+            transition
+            cursor-pointer
+          "
         >
 
           <Heart
             size={20}
             fill={
-              isFavorite(currentSong)
+              favorite
                 ? "white"
                 : "transparent"
             }
@@ -105,6 +114,7 @@ function MiniPlayer() {
             w-10 h-10 rounded-full
             bg-white text-black
             flex items-center justify-center
+            cursor-pointer
           "
         >
 
@@ -125,4 +135,4 @@ function MiniPlayer() {
   )
 }
 
-export default MiniPlayer;
+export default MiniPlayer

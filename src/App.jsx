@@ -1,36 +1,50 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom"
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom"
 import Sidebar from "./components/Sidebar"
 import MiniPlayer from "./components/MiniPlayer"
 import FullPlayer from "./components/FullPlayer"
 import Search from "./pages/Search"
 import Home from "./pages/Home"
 import Favorites from "./pages/Favorites"
+import Login from "./pages/Login"
+import Signup from "./pages/Signup"
+import Profile from "./pages/Profile"
 
-function App() {
+function Layout() {
+  const location = useLocation()
+
+  const isAuthPage =
+    location.pathname === "/login" ||
+    location.pathname === "/signup"
 
   return (
+    <div className="flex bg-black text-white min-h-screen">
+      {!isAuthPage && <Sidebar />}
+
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/favorites" element={<Favorites />} />
+        <Route path="/search" element={<Search />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/profile" element={<Profile />} />
+      </Routes>
+
+      {!isAuthPage && (
+        <>
+          <MiniPlayer />
+          <FullPlayer />
+        </>
+      )}
+    </div>
+  )
+}
+
+function App() {
+  return (
     <BrowserRouter>
-      <div className="flex bg-black text-white min-h-screen">
-        <Sidebar />
-
-        <Routes>
-          <Route
-            path="/"
-            element={<Home />}/>
-          <Route
-            path="/favorites"
-            element={<Favorites />}/>
-
-          <Route
-            path="/search"
-            element={<Search />}/>
-        </Routes>
-
-        <MiniPlayer />
-        <FullPlayer />
-      </div>
+      <Layout />
     </BrowserRouter>
   )
 }
 
-export default App;
+export default App

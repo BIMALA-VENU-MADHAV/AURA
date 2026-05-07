@@ -2,6 +2,7 @@ import {
   Home,
   Heart,
   Search,
+  User,
 } from "lucide-react"
 
 import {
@@ -28,6 +29,12 @@ function Sidebar() {
       icon: Heart,
       label: "Favorites",
     },
+
+    {
+      path: "/profile",
+      icon: User,
+      label: "Profile",
+    },
   ]
 
   return (
@@ -35,12 +42,10 @@ function Sidebar() {
       {/* Desktop Sidebar */}
       <div className="hidden md:flex w-24 h-screen flex-col items-center py-10 border-r border-white/5 bg-black/40 backdrop-blur-2xl">
 
-        {/* Logo */}
         <h1 className="text-2xl font-bold mb-16">
           Aura
         </h1>
 
-        {/* Navigation */}
         <div className="flex flex-col gap-6">
 
           {navItems.map((item) => {
@@ -100,9 +105,9 @@ function Sidebar() {
               }
             >
 
-              <Icon size={24} />
+              <Icon size={22} />
 
-              <span className="text-xs">
+              <span className="text-[10px]">
                 {item.label}
               </span>
 
@@ -115,4 +120,4 @@ function Sidebar() {
   )
 }
 
-export default Sidebar;
+export default Sidebar

@@ -28,6 +28,10 @@ function FullPlayer() {
     isFavorite,
   } = usePlayer()
 
+  const favorite =
+    currentSong &&
+    isFavorite(currentSong)
+
   if (!isPlayerOpen || !currentSong)
     return null
 
@@ -78,7 +82,7 @@ function FullPlayer() {
             onClick={() =>
               setIsPlayerOpen(false)
             }
-            className="text-white"
+            className="text-white cursor-pointer"
           >
             <ChevronDown size={34} />
           </button>
@@ -91,12 +95,13 @@ function FullPlayer() {
             onClick={() =>
               toggleFavorite(currentSong)
             }
+            className="cursor-pointer"
           >
 
             <Heart
               className="text-white"
               fill={
-                isFavorite(currentSong)
+                favorite
                   ? "white"
                   : "transparent"
               }
@@ -151,7 +156,7 @@ function FullPlayer() {
               onChange={(e) =>
                 seekSong(e.target.value)
               }
-              className="w-full accent-white"
+              className="w-full accent-white cursor-pointer"
             />
 
             <div className="flex justify-between text-sm text-zinc-400 mt-2">
@@ -183,14 +188,14 @@ function FullPlayer() {
 
             <button
               onClick={prevSong}
-              className="text-white"
+              className="text-white cursor-pointer"
             >
               <SkipBack size={38} />
             </button>
 
             <button
               onClick={togglePlay}
-              className="bg-white text-black w-20 h-20 rounded-full flex items-center justify-center shadow-2xl"
+              className="bg-white text-black w-20 h-20 rounded-full flex items-center justify-center shadow-2xl cursor-pointer"
             >
 
               {isPlaying ? (
@@ -206,7 +211,7 @@ function FullPlayer() {
 
             <button
               onClick={nextSong}
-              className="text-white"
+              className="text-white cursor-pointer"
             >
               <SkipForward size={38} />
             </button>

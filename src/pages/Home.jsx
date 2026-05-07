@@ -1,24 +1,73 @@
-// src/pages/Home.jsx
-
+import { useEffect, useState } from "react"
+import { Link } from "react-router-dom"
+import supabase from "../lib/supabase"
 import songs from "../data/songs"
-
 import SongCard from "../components/SongCard"
 
 function Home() {
+  const [profile, setProfile] = useState(null)
+
+  useEffect(() => {
+    getProfile()
+  }, [])
+
+  const getProfile = async () => {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
+
+    if (!user) return
+
+    const { data } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("id", user.id)
+      .single()
+
+    setProfile(data)
+  }
 
   return (
     <div className="flex-1 min-h-screen overflow-y-auto bg-black px-5 md:px-10 pt-10 md:pt-14 pb-32">
 
       {/* Top */}
-      <div className="mb-12">
+      <div className="flex items-start justify-between mb-12">
 
-        <p className="text-zinc-500 text-sm uppercase tracking-[5px] mb-3">
-          Welcome To
-        </p>
+        <div>
 
-        <h1 className="text-5xl md:text-7xl font-bold tracking-tight">
-          Aura
-        </h1>
+          <p className="text-zinc-500 text-sm uppercase tracking-[5px] mb-3">
+            Welcome Back
+          </p>
+
+          <h1 className="text-5xl md:text-7xl font-bold tracking-tight">
+            Aura
+          </h1>
+
+        </div>
+
+        {profile && (
+
+          <Link to="/profile">
+
+            {profile.avatar_url ? (
+
+              <img
+                src={profile.avatar_url}
+                alt="profile"
+                className="w-14 h-14 rounded-full object-cover border border-white/10"
+              />
+
+            ) : (
+
+              <div className="w-14 h-14 rounded-full bg-white/10 flex items-center justify-center text-lg font-semibold">
+                {profile.name[0]}
+              </div>
+
+            )}
+
+          </Link>
+
+        )}
 
       </div>
 
@@ -42,4 +91,4 @@ function Home() {
   )
 }
 
-export default Home;
+export default Home
