@@ -2,101 +2,39 @@
 
 import songs from "../data/songs"
 
-import playlists from "../data/playlists"
-
-import {
-  usePlayer,
-} from "../context/PlayerContext"
-
-import HeroBanner from "../components/home/HeroBanner"
-
-import HorizontalSongs from "../components/home/HorizontalSongs"
-
-import PlaylistCard from "../components/home/PlaylistCard"
-
-import CategoryCard from "../components/home/CategoryCard"
-
-import SectionTitle from "../components/home/SectionTitle"
+import SongCard from "../components/SongCard"
 
 function Home() {
 
-  const { recentSongs } =
-    usePlayer()
-
   return (
-    <div className="flex-1 p-4 md:p-10 pb-32 overflow-y-auto mt-20 md:mt-0">
+    <div className="flex-1 min-h-screen overflow-y-auto bg-black px-5 md:px-10 pt-10 md:pt-14 pb-32">
 
-      {/* Hero */}
-      <HeroBanner />
+      {/* Top */}
+      <div className="mb-12">
 
-      {/* Recently Played */}
-      <SectionTitle title="Recently Played" />
+        <p className="text-zinc-500 text-sm uppercase tracking-[5px] mb-3">
+          Welcome Back
+        </p>
 
-      <HorizontalSongs
-        songs={
-          recentSongs.length > 0
-            ? recentSongs
-            : songs
-        }
-      />
-
-      {/* Top Charts */}
-      <div className="mt-14">
-
-        <SectionTitle title="Top Charts" />
-
-        <HorizontalSongs songs={songs} />
+        <h1 className="text-5xl md:text-7xl font-bold tracking-tight">
+          Aura
+        </h1>
 
       </div>
 
-      {/* Categories */}
-      <div className="mt-14">
+      {/* Songs */}
+      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-5 md:gap-8">
 
-        <SectionTitle title="Browse Categories" />
+        {songs.map((song, index) => (
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-
-          <CategoryCard
-            title="Hip Hop"
-            color="linear-gradient(135deg,#9333ea,#ec4899)"
+          <SongCard
+            key={song.id}
+            song={song}
+            songs={songs}
+            index={index}
           />
 
-          <CategoryCard
-            title="Chill"
-            color="linear-gradient(135deg,#06b6d4,#3b82f6)"
-          />
-
-          <CategoryCard
-            title="Rock"
-            color="linear-gradient(135deg,#f97316,#ef4444)"
-          />
-
-          <CategoryCard
-            title="Jazz"
-            color="linear-gradient(135deg,#14b8a6,#22c55e)"
-          />
-
-        </div>
-
-      </div>
-
-      {/* Playlists */}
-      <div className="mt-14">
-
-        <SectionTitle title="Recommended Playlists" />
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-
-          {playlists.map((playlist) => (
-
-            <PlaylistCard
-              key={playlist.id}
-              playlist={playlist}
-            />
-
-          ))}
-
-        </div>
+        ))}
 
       </div>
 
@@ -104,4 +42,4 @@ function Home() {
   )
 }
 
-export default Home
+export default Home;

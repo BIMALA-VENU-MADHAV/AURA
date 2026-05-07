@@ -10,11 +10,15 @@ import {
 
 const PlayerContext = createContext()
 
-export const PlayerProvider = ({ children }) => {
+export const PlayerProvider = ({
+  children,
+}) => {
 
-  const audioRef = useRef(new Audio())
+  const audioRef =
+    useRef(new Audio())
 
-  const [currentSong, setCurrentSong] = useState(null)
+  const [currentSong, setCurrentSong] =
+    useState(null)
 
   const [isPlaying, setIsPlaying] =
     useState(false)
@@ -25,7 +29,8 @@ export const PlayerProvider = ({ children }) => {
   const [duration, setDuration] =
     useState(0)
 
-  const [songs, setSongs] = useState([])
+  const [songs, setSongs] =
+    useState([])
 
   const [currentIndex, setCurrentIndex] =
     useState(0)
@@ -46,7 +51,9 @@ export const PlayerProvider = ({ children }) => {
 
     const saved =
       JSON.parse(
-        localStorage.getItem("favorites")
+        localStorage.getItem(
+          "favorites"
+        )
       ) || []
 
     setFavorites(saved)
@@ -68,7 +75,9 @@ export const PlayerProvider = ({ children }) => {
 
     const saved =
       JSON.parse(
-        localStorage.getItem("recentSongs")
+        localStorage.getItem(
+          "recentSongs"
+        )
       ) || []
 
     setRecentSongs(saved)
@@ -88,19 +97,29 @@ export const PlayerProvider = ({ children }) => {
   // Track Progress
   useEffect(() => {
 
-    const audio = audioRef.current
+    const audio =
+      audioRef.current
 
     const updateTime = () => {
 
-      setCurrentTime(audio.currentTime)
+      setCurrentTime(
+        audio.currentTime
+      )
 
-      setDuration(audio.duration)
+      setDuration(
+        audio.duration
+      )
 
     }
 
     audio.addEventListener(
       "timeupdate",
       updateTime
+    )
+
+    audio.addEventListener(
+      "ended",
+      nextSong
     )
 
     return () => {
@@ -110,9 +129,14 @@ export const PlayerProvider = ({ children }) => {
         updateTime
       )
 
+      audio.removeEventListener(
+        "ended",
+        nextSong
+      )
+
     }
 
-  }, [])
+  })
 
   // Play Song
   const playSong = (
@@ -127,8 +151,14 @@ export const PlayerProvider = ({ children }) => {
 
     setCurrentIndex(index)
 
-    if (currentSong?.audio !== song.audio) {
-      audioRef.current.src = song.audio
+    if (
+      currentSong?.audio !==
+      song.audio
+    ) {
+
+      audioRef.current.src =
+        song.audio
+
     }
 
     audioRef.current.play()
@@ -139,12 +169,13 @@ export const PlayerProvider = ({ children }) => {
 
     setIsPlayerOpen(true)
 
-    // Add to Recently Played
+    // Recently Played
     setRecentSongs((prev) => {
 
       const filtered =
         prev.filter(
-          (item) => item.id !== song.id
+          (item) =>
+            item.id !== song.id
         )
 
       return [
@@ -185,17 +216,20 @@ export const PlayerProvider = ({ children }) => {
   // Seek
   const seekSong = (time) => {
 
-    audioRef.current.currentTime = time
+    audioRef.current.currentTime =
+      time
 
   }
 
-  // Next
+  // Next Song
   const nextSong = () => {
 
-    if (songs.length === 0) return
+    if (songs.length === 0)
+      return
 
     const nextIndex =
-      currentIndex === songs.length - 1
+      currentIndex ===
+      songs.length - 1
         ? 0
         : currentIndex + 1
 
@@ -206,10 +240,11 @@ export const PlayerProvider = ({ children }) => {
     )
   }
 
-  // Prev
+  // Previous Song
   const prevSong = () => {
 
-    if (songs.length === 0) return
+    if (songs.length === 0)
+      return
 
     const prevIndex =
       currentIndex === 0
@@ -224,17 +259,22 @@ export const PlayerProvider = ({ children }) => {
   }
 
   // Favorites
-  const toggleFavorite = (song) => {
+  const toggleFavorite = (
+    song
+  ) => {
 
-    const exists = favorites.find(
-      (item) => item.id === song.id
-    )
+    const exists =
+      favorites.find(
+        (item) =>
+          item.id === song.id
+      )
 
     if (exists) {
 
       setFavorites(
         favorites.filter(
-          (item) => item.id !== song.id
+          (item) =>
+            item.id !== song.id
         )
       )
 
@@ -248,10 +288,12 @@ export const PlayerProvider = ({ children }) => {
     }
   }
 
+  // Check Favorite
   const isFavorite = (song) => {
 
     return favorites.some(
-      (item) => item.id === song.id
+      (item) =>
+        item.id === song.id
     )
 
   }

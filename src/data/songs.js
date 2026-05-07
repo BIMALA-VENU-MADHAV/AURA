@@ -1,43 +1,72 @@
 const songs = [
   {
     id: 1,
-    title: "Blinding Lights",
-    artist: "The Weeknd",
+    title: "Fendi 2",
+    artist: "Rakhim Abramov",
     image:
-      "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?q=80&w=500",
+      "Fendi.jpg",
     audio:
-      "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+      "Fendi.mp3",
   },
 
   {
     id: 2,
-    title: "Levitating",
-    artist: "Dua Lipa",
+    title: "MONTAGEM ALQUIMIA",
+    artist: "Mc Menor Da Alvorada",
     image:
-      "https://images.unsplash.com/photo-1511379938547-c1f69419868d?q=80&w=500",
+      "Montagem-Alquimia.jpg ",
     audio:
-      "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
+      "MONTAGEM-ALQUIMIA.mp3",
   },
 
   {
     id: 3,
-    title: "Starboy",
-    artist: "The Weeknd",
+    title: "HONOUR",
+    artist: "NX!ZE",
     image:
-      "https://images.unsplash.com/photo-1507838153414-b4b713384a76?q=80&w=500",
+      "HONOUR.jpg",
     audio:
-      "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
+      "HONOUR-Slowed.mp3",
   },
 
   {
     id: 4,
-    title: "Perfect",
-    artist: "Ed Sheeran",
+    title: "NO BATIDÃO(Slowed)",
+    artist: "ZXKAI",
     image:
-      "https://images.unsplash.com/photo-1516280440614-37939bbacd81?q=80&w=500",
+      "NO-BATIDAO.jpg",
     audio:
-      "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3",
+      "NO-BATIDÃO.mp3",
   },
+  {
+    id: 5,
+    title: "八方來財(Stacks from All Sides) - Slowed",
+    artist: "neonelle",
+    image:
+      "Stacks-from-All-Sides.jpg",
+    audio:
+      "八方來財(Stacks from All Sides).mp3",
+  }, 
+
+  {
+    id: 6,
+    title: "Feel Good Inc.",
+    artist: "Gorillaz, De La Soul",
+    image:
+      "Feel-Good-Inc.jpg",
+    audio:
+      "Feel Good Inc..mp3",
+  }, 
+
+  {
+    id: 7,
+    title: "2 Dangerous",
+    artist: "Rarin",
+    image:
+      "2 Dangerous.jpg",
+    audio:
+      "2 Dangerous.mp3",
+  }, 
 ]
 
-export default songs
+export default songs;

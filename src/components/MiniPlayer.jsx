@@ -21,45 +21,48 @@ function MiniPlayer() {
     isFavorite,
   } = usePlayer()
 
+  // Hide if no song selected
   if (!currentSong) return null
 
   return (
     <motion.div
       initial={{ y: 100 }}
       animate={{ y: 0 }}
-      transition={{ duration: 0.4 }}
+      transition={{ duration: 0.3 }}
       onClick={() =>
         setIsPlayerOpen(true)
       }
-      className="fixed bottom-4 left-1/2 -translate-x-1/2 w-[95%] max-w-5xl h-20 md:h-24 rounded-3xl bg-white/10 backdrop-blur-2xl border border-white/10 px-4 md:px-6 flex items-center justify-between z-40 shadow-2xl cursor-pointer"
+      className="
+        fixed bottom-20 md:bottom-0 left-0 right-0
+        h-20
+        bg-black/80
+        backdrop-blur-xl
+        border-t border-white/5
+        px-5 md:px-8
+        flex items-center justify-between
+        z-40
+        cursor-pointer
+      "
     >
 
       {/* Left */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-4 min-w-0">
 
-        <motion.img
-          animate={{
-            rotate: isPlaying
-              ? 360
-              : 0,
-          }}
-          transition={{
-            repeat: Infinity,
-            duration: 12,
-            ease: "linear",
-          }}
+        {/* Album */}
+        <img
           src={currentSong.image}
           alt={currentSong.title}
-          className="w-12 h-12 md:w-16 md:h-16 rounded-2xl object-cover"
+          className="w-12 h-12 rounded-xl object-cover"
         />
 
-        <div>
+        {/* Song Info */}
+        <div className="min-w-0">
 
-          <h2 className="font-semibold text-sm md:text-lg">
+          <h2 className="text-sm md:text-base font-medium truncate">
             {currentSong.title}
           </h2>
 
-          <p className="text-zinc-300 text-xs md:text-base">
+          <p className="text-zinc-500 text-xs md:text-sm truncate">
             {currentSong.artist}
           </p>
 
@@ -68,18 +71,20 @@ function MiniPlayer() {
       </div>
 
       {/* Right */}
-      <div className="flex items-center gap-3 md:gap-5">
+      <div className="flex items-center gap-5">
 
         {/* Favorite */}
         <button
           onClick={(e) => {
             e.stopPropagation()
+
             toggleFavorite(currentSong)
           }}
-          className="text-white"
+          className="text-zinc-400 hover:text-white transition"
         >
 
           <Heart
+            size={20}
             fill={
               isFavorite(currentSong)
                 ? "white"
@@ -89,19 +94,27 @@ function MiniPlayer() {
 
         </button>
 
-        {/* Play */}
+        {/* Play Pause */}
         <button
           onClick={(e) => {
             e.stopPropagation()
+
             togglePlay()
           }}
-          className="bg-white text-black w-12 h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center"
+          className="
+            w-10 h-10 rounded-full
+            bg-white text-black
+            flex items-center justify-center
+          "
         >
 
           {isPlaying ? (
-            <Pause />
+            <Pause size={18} />
           ) : (
-            <Play className="ml-1" />
+            <Play
+              size={18}
+              className="ml-0.5"
+            />
           )}
 
         </button>
@@ -112,4 +125,4 @@ function MiniPlayer() {
   )
 }
 
-export default MiniPlayer
+export default MiniPlayer;

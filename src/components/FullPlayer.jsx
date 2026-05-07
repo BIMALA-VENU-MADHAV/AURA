@@ -1,5 +1,3 @@
-// src/components/FullPlayer.jsx
-
 import { motion } from "framer-motion"
 
 import {
@@ -46,8 +44,7 @@ function FullPlayer() {
       transition={{
         duration: 0.4,
       }}
-      className="fixed inset-0 z-50 overflow-hidden bg-gradient-to-br from-purple-900 via-black to-pink-900"
-    >
+      className="fixed inset-0 z-50 overflow-hidden bg-gradient-to-br from-purple-900 via-black to-pink-900">
 
       {/* Blurred Background */}
       <div
@@ -114,15 +111,16 @@ function FullPlayer() {
 
           {/* Album */}
           <motion.img
+            initial={{
+              scale: 0.9,
+              opacity: 0,
+            }}
             animate={{
-              rotate: isPlaying
-                ? 360
-                : 0,
+              scale: 1,
+              opacity: 1,
             }}
             transition={{
-              repeat: Infinity,
-              duration: 18,
-              ease: "linear",
+              duration: 0.4,
             }}
             src={currentSong.image}
             alt={currentSong.title}
