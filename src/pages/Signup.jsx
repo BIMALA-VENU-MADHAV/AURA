@@ -1,27 +1,31 @@
-import { useState } from "react"
-import { useNavigate, Link } from "react-router-dom"
-import { motion } from "framer-motion"
-import { Eye, EyeOff } from "lucide-react"
+import {useState} from "react"
+import {useNavigate,Link} from "react-router-dom"
+import {ArrowLeft,Eye,EyeOff} from "lucide-react"
+import {motion} from "framer-motion"
 import supabase from "../lib/supabase"
 
-function Signup() {
-  const [name, setName] = useState("")
-  const [age, setAge] = useState("")
-  const [gender, setGender] = useState("")
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [avatar, setAvatar] = useState(null)
-  const [showPassword, setShowPassword] = useState(false)
-  const [loading, setLoading] = useState(false)
+function Signup(){
 
-  const navigate = useNavigate()
+  const [name,setName]=useState("")
+  const [age,setAge]=useState("")
+  const [gender,setGender]=useState("")
+  const [email,setEmail]=useState("")
+  const [password,setPassword]=useState("")
+  const [avatar,setAvatar]=useState(null)
+  const [showPassword,setShowPassword]=useState(false)
+  const [loading,setLoading]=useState(false)
 
-  const handleSignup = async (e) => {
+  const navigate=useNavigate()
+
+  const handleSignup=async(e)=>{
+
     e.preventDefault()
 
-    if (!name || !age || !gender) {
+    if(!name||!age||!gender){
+
       alert("Please fill all required fields")
       return
+
     }
 
     setLoading(true)
@@ -29,94 +33,127 @@ function Signup() {
     const {
       data,
       error,
-    } = await supabase.auth.signUp({
+    }=await supabase.auth.signUp({
       email,
       password,
     })
 
-    if (error) {
+    if(error){
+
       setLoading(false)
       alert(error.message)
       return
+
     }
 
-    let avatarUrl = ""
+    let avatarUrl=""
 
-    if (avatar) {
-      const fileExt =
+    if(avatar){
+
+      const fileExt=
         avatar.name.split(".").pop()
 
-      const fileName =
+      const fileName=
         `${Date.now()}.${fileExt}`
 
-      const { error: uploadError } =
+      const {error:uploadError}=
         await supabase.storage
           .from("avatars")
-          .upload(fileName, avatar)
+          .upload(fileName,avatar)
 
-      if (!uploadError) {
+      if(!uploadError){
 
-        const { data } =
+        const {data}=
           supabase.storage
             .from("avatars")
             .getPublicUrl(fileName)
 
-        avatarUrl =
+        avatarUrl=
           data.publicUrl
+
       }
+
     }
 
     await supabase
       .from("profiles")
       .insert({
-        id: data.user.id,
+        id:data.user.id,
         name,
         age,
         gender,
-        avatar_url: avatarUrl,
+        avatar_url:avatarUrl,
         email,
       })
 
     setLoading(false)
 
     navigate("/")
+
   }
 
-  return (
-    <div className="w-full min-h-screen bg-black text-white relative overflow-hidden flex items-center justify-center px-6">
+  return(
+    <div className="w-full min-h-screen bg-black text-white relative overflow-hidden flex items-center justify-center px-6 py-10">
 
-      {/* Background Glow */}
+      {/* Back */}
+      <button
+      onClick={()=>{
+
+        if(window.history.length>1){
+
+          navigate(-1)
+
+        }else{
+
+          navigate("/")
+
+        }
+
+      }}
+      className="
+      absolute top-6 left-6
+      w-12 h-12 rounded-full
+      bg-white/10 backdrop-blur-xl
+      flex items-center justify-center
+      cursor-pointer hover:bg-white/20
+      transition z-20
+      "
+      >
+        <ArrowLeft size={22}/>
+      </button>
+
+      {/* Glow */}
       <div className="absolute inset-0">
 
-        <div className="absolute top-[-200px] left-[-100px] w-[500px] h-[500px] bg-fuchsia-500/20 blur-[120px] rounded-full" />
+        <div className="absolute top-[-200px] left-[-100px] w-[500px] h-[500px] bg-fuchsia-500/20 blur-[120px] rounded-full"/>
 
-        <div className="absolute bottom-[-200px] right-[-100px] w-[500px] h-[500px] bg-indigo-500/20 blur-[120px] rounded-full" />
+        <div className="absolute bottom-[-200px] right-[-100px] w-[500px] h-[500px] bg-indigo-500/20 blur-[120px] rounded-full"/>
 
       </div>
 
       {/* Card */}
       <motion.form
-        initial={{
-          opacity: 0,
-          y: 30,
-        }}
-        animate={{
-          opacity: 1,
-          y: 0,
-        }}
-        transition={{
-          duration: 0.4,
-        }}
-        onSubmit={handleSignup}
-        className="
-          relative z-10
-          w-full max-w-md
-          bg-white/5
-          border border-white/10
-          backdrop-blur-3xl
-          rounded-[40px]
-          p-8 md:p-10
-        "
+      initial={{
+        opacity:0,
+        y:30,
+      }}
+      animate={{
+        opacity:1,
+        y:0,
+      }}
+      transition={{
+        duration:0.4,
+      }}
+      onSubmit={handleSignup}
+      className="
+      relative z-10
+      w-full max-w-xl
+      bg-white/5
+      border border-white/10
+      backdrop-blur-3xl
+      rounded-[40px]
+      p-8 md:p-10
+      "
       >
 
         {/* Header */}
@@ -135,35 +172,32 @@ function Signup() {
         {/* Inputs */}
         <div className="space-y-5">
 
-          {/* Avatar Upload */}
+          {/* Avatar */}
           <div className="flex flex-col items-center">
 
             <label
-              htmlFor="avatar"
-              className="
-                relative
-                w-28 h-28
-                rounded-full
-                overflow-hidden
-                border border-white/10
-                bg-white/5
-                flex items-center justify-center
-                cursor-pointer
-                hover:bg-white/10
-                transition
-              "
+            htmlFor="avatar"
+            className="
+            relative
+            w-28 h-28
+            rounded-full
+            overflow-hidden
+            border border-white/10
+            bg-white/5
+            flex items-center justify-center
+            cursor-pointer
+            hover:bg-white/10
+            transition
+            "
             >
 
-              {avatar ? (
-
+              {avatar?(
                 <img
-                  src={URL.createObjectURL(avatar)}
-                  alt="Avatar"
-                  className="w-full h-full object-cover"
+                src={URL.createObjectURL(avatar)}
+                alt="Avatar"
+                className="w-full h-full object-cover"
                 />
-
-              ) : (
-
+              ):(
                 <div className="text-center">
 
                   <p className="text-3xl">
@@ -175,21 +209,21 @@ function Signup() {
                   </p>
 
                 </div>
-
               )}
 
             </label>
 
             <input
-              id="avatar"
-              type="file"
-              accept="image/*"
-              onChange={(e) =>
-                setAvatar(
-                  e.target.files[0]
-                )
-              }
-              className="hidden"
+            id="avatar"
+            name="avatar"
+            type="file"
+            accept="image/*"
+            onChange={(e)=>
+              setAvatar(
+                e.target.files[0]
+              )
+            }
+            className="hidden"
             />
 
             <p className="text-zinc-500 text-sm mt-4">
@@ -200,40 +234,45 @@ function Signup() {
 
           {/* Name */}
           <input
-            type="text"
-            placeholder="Full Name"
-            value={name}
-            onChange={(e) =>
-              setName(e.target.value)
-            }
-            className="
-              w-full
-              bg-white/5
-              border border-white/10
-              rounded-2xl
-              px-5 py-4
-              outline-none
-              placeholder:text-zinc-500
-            "
+          id="name"
+          name="name"
+          autoComplete="name"
+          type="text"
+          placeholder="Full Name"
+          value={name}
+          onChange={(e)=>
+            setName(e.target.value)
+          }
+          className="
+          w-full
+          bg-white/5
+          border border-white/10
+          rounded-2xl
+          px-5 py-4
+          outline-none
+          placeholder:text-zinc-500
+          "
           />
 
           {/* Age */}
           <input
-            type="number"
-            placeholder="Age"
-            value={age}
-            onChange={(e) =>
-              setAge(e.target.value)
-            }
-            className="
-              w-full
-              bg-white/5
-              border border-white/10
-              rounded-2xl
-              px-5 py-4
-              outline-none
-              placeholder:text-zinc-500
-            "
+          id="age"
+          name="age"
+          type="number"
+          placeholder="Age"
+          value={age}
+          onChange={(e)=>
+            setAge(e.target.value)
+          }
+          className="
+          w-full
+          bg-white/5
+          border border-white/10
+          rounded-2xl
+          px-5 py-4
+          outline-none
+          placeholder:text-zinc-500
+          "
           />
 
           {/* Gender */}
@@ -245,22 +284,22 @@ function Signup() {
 
             <div className="grid grid-cols-3 gap-3">
 
-              {["Male", "Female", "Other"].map((item) => (
+              {["Male","Female","Other"].map((item)=>(
 
                 <button
-                  key={item}
-                  type="button"
-                  onClick={() =>
-                    setGender(item)
-                  }
-                  className={`
-                    py-4 rounded-2xl border transition
-                    ${
-                      gender === item
-                        ? "bg-white text-black border-white"
-                        : "bg-white/5 border-white/10 text-white hover:bg-white/10"
-                    }
-                  `}
+                key={item}
+                type="button"
+                onClick={()=>
+                  setGender(item)
+                }
+                className={`
+                py-4 rounded-2xl border transition cursor-pointer
+                ${
+                  gender===item
+                  ? "bg-white text-black border-white"
+                  : "bg-white/5 border-white/10 text-white hover:bg-white/10"
+                }
+                `}
                 >
 
                   {item}
@@ -275,66 +314,73 @@ function Signup() {
 
           {/* Email */}
           <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) =>
-              setEmail(e.target.value)
-            }
-            className="
-              w-full
-              bg-white/5
-              border border-white/10
-              rounded-2xl
-              px-5 py-4
-              outline-none
-              placeholder:text-zinc-500
-            "
+          id="email"
+          name="email"
+          autoComplete="email"
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e)=>
+            setEmail(e.target.value)
+          }
+          className="
+          w-full
+          bg-white/5
+          border border-white/10
+          rounded-2xl
+          px-5 py-4
+          outline-none
+          placeholder:text-zinc-500
+          "
           />
 
           {/* Password */}
           <div className="relative">
 
             <input
-              type={
-                showPassword
-                  ? "text"
-                  : "password"
-              }
-              placeholder="Password"
-              value={password}
-              onChange={(e) =>
-                setPassword(e.target.value)
-              }
-              className="
-                w-full
-                bg-white/5
-                border border-white/10
-                rounded-2xl
-                px-5 py-4 pr-14
-                outline-none
-                placeholder:text-zinc-500
-              "
+            id="password"
+            name="password"
+            autoComplete="new-password"
+            type={
+              showPassword
+              ? "text"
+              : "password"
+            }
+            placeholder="Password"
+            value={password}
+            onChange={(e)=>
+              setPassword(e.target.value)
+            }
+            className="
+            w-full
+            bg-white/5
+            border border-white/10
+            rounded-2xl
+            px-5 py-4 pr-14
+            outline-none
+            placeholder:text-zinc-500
+            "
             />
 
             <button
-              type="button"
-              onClick={() =>
-                setShowPassword(!showPassword)
-              }
-              className="
-                absolute right-5 top-1/2
-                -translate-y-1/2
-                text-zinc-500
-                hover:text-white
-                transition
-              "
+            type="button"
+            onClick={()=>
+              setShowPassword(!showPassword)
+            }
+            className="
+            absolute right-5 top-1/2
+            -translate-y-1/2
+            text-zinc-500
+            hover:text-white
+            transition
+            cursor-pointer
+            "
             >
 
-              {showPassword ? (
-                <EyeOff size={20} />
-              ) : (
-                <Eye size={20} />
+              {showPassword?(
+                <EyeOff size={20}/>
+              ):(
+                <Eye size={20}/>
               )}
 
             </button>
@@ -345,25 +391,26 @@ function Signup() {
 
         {/* Button */}
         <button
-          type="submit"
-          disabled={loading}
-          className="
-            w-full
-            mt-8
-            bg-white
-            text-black
-            font-semibold
-            py-4
-            rounded-2xl
-            hover:scale-[1.02]
-            transition
-            disabled:opacity-50
-          "
+        type="submit"
+        disabled={loading}
+        className="
+        w-full
+        mt-8
+        bg-white
+        text-black
+        font-semibold
+        py-4
+        rounded-2xl
+        hover:scale-[1.02]
+        transition
+        disabled:opacity-50
+        cursor-pointer
+        "
         >
 
           {loading
-            ? "Creating..."
-            : "Create Account"}
+          ? "Creating..."
+          : "Create Account"}
 
         </button>
 
@@ -373,8 +420,8 @@ function Signup() {
           Already have an account?{" "}
 
           <Link
-            to="/login"
-            className="text-white"
+          to="/login"
+          className="text-white"
           >
             Login
           </Link>
@@ -385,6 +432,7 @@ function Signup() {
 
     </div>
   )
+
 }
 
 export default Signup

@@ -40,7 +40,7 @@ function Sidebar() {
   return (
     <>
       {/* Desktop Sidebar */}
-      <div className="hidden md:flex w-30 h-screen shrink-0 flex-col items-center py-10 border-r border-white/5 bg-black/40 backdrop-blur-2xl">
+      <div className="hidden md:flex w-32 h-screen shrink-0 flex-col items-center py-10 border-r border-white/5 bg-black/40 backdrop-blur-2xl">
         <h1 className="text-2xl font-bold mb-16">
           Aura
         </h1>
