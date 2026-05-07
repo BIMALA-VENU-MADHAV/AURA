@@ -35,6 +35,9 @@ export const PlayerProvider = ({ children }) => {
   const [isPlayerOpen, setIsPlayerOpen] =
     useState(false)
 
+  const [playMode, setPlayMode] =
+    useState("repeat-all")
+
   const [favorites, setFavorites] =
     useState([])
 
@@ -137,6 +140,31 @@ export const PlayerProvider = ({ children }) => {
 
   }, [])
 
+  // Auto Next Song
+  useEffect(() => {
+
+    const audio = audioRef.current
+
+    const handleEnded = () => {
+      nextSong()
+    }
+
+    audio.addEventListener(
+      "ended",
+      handleEnded
+    )
+
+    return () => {
+
+      audio.removeEventListener(
+        "ended",
+        handleEnded
+      )
+
+    }
+
+  }, [songs, currentIndex, playMode])
+
   // Play Song
   const playSong = (
     song,
@@ -153,8 +181,10 @@ export const PlayerProvider = ({ children }) => {
     if (
       currentSong?.audio !== song.audio
     ) {
+
       audioRef.current.src =
         song.audio
+
     }
 
     audioRef.current.play()
@@ -180,6 +210,7 @@ export const PlayerProvider = ({ children }) => {
       ].slice(0, 10)
 
     })
+
   }
 
   // Pause Song
@@ -223,6 +254,37 @@ export const PlayerProvider = ({ children }) => {
 
     if (songs.length === 0) return
 
+    // Repeat One
+    if (playMode === "repeat-one") {
+
+      playSong(
+        songs[currentIndex],
+        currentIndex,
+        songs
+      )
+
+      return
+    }
+
+    // Shuffle
+    if (playMode === "shuffle") {
+
+      const randomIndex =
+        Math.floor(
+          Math.random() *
+          songs.length
+        )
+
+      playSong(
+        songs[randomIndex],
+        randomIndex,
+        songs
+      )
+
+      return
+    }
+
+    // Repeat All
     const nextIndex =
       currentIndex === songs.length - 1
         ? 0
@@ -254,6 +316,31 @@ export const PlayerProvider = ({ children }) => {
 
   }
 
+  // Toggle Play Mode
+  const togglePlayMode = () => {
+
+    if (playMode === "repeat-all") {
+
+      setPlayMode("repeat-one")
+
+    }
+
+    else if (
+      playMode === "repeat-one"
+    ) {
+
+      setPlayMode("shuffle")
+
+    }
+
+    else {
+
+      setPlayMode("repeat-all")
+
+    }
+
+  }
+
   // Toggle Favorite
   const toggleFavorite = async (
     song
@@ -274,7 +361,7 @@ export const PlayerProvider = ({ children }) => {
         String(song.id)
     )
 
-    // Remove Favorite
+    // Remove
     if (exists) {
 
       const { error } =
@@ -298,7 +385,7 @@ export const PlayerProvider = ({ children }) => {
 
     }
 
-    // Add Favorite
+    // Add
     else {
 
       const { data, error } =
@@ -361,6 +448,8 @@ export const PlayerProvider = ({ children }) => {
         prevSong,
         isPlayerOpen,
         setIsPlayerOpen,
+        playMode,
+        togglePlayMode,
         favorites,
         toggleFavorite,
         isFavorite,

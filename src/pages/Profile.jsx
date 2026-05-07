@@ -1,17 +1,27 @@
 import { useEffect, useRef, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { motion } from "framer-motion"
 import { Pencil, X } from "lucide-react"
 import supabase from "../lib/supabase"
 
 function Profile() {
-  const [profile, setProfile] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [avatar, setAvatar] = useState(null)
 
-  const [editName, setEditName] = useState(false)
-  const [editAge, setEditAge] = useState(false)
-  const [editGender, setEditGender] = useState(false)
+  const [profile, setProfile] =
+    useState(null)
+
+  const [loading, setLoading] =
+    useState(true)
+
+  const [avatar, setAvatar] =
+    useState(null)
+
+  const [editName, setEditName] =
+    useState(false)
+
+  const [editAge, setEditAge] =
+    useState(false)
+
+  const [editGender, setEditGender] =
+    useState(false)
 
   const navigate = useNavigate()
 
@@ -24,27 +34,42 @@ function Profile() {
   }, [])
 
   useEffect(() => {
-    const handleClickOutside = (e) => {
+
+    const handleClickOutside = (
+      e
+    ) => {
 
       if (
         nameRef.current &&
-        !nameRef.current.contains(e.target)
+        !nameRef.current.contains(
+          e.target
+        )
       ) {
+
         setEditName(false)
+
       }
 
       if (
         ageRef.current &&
-        !ageRef.current.contains(e.target)
+        !ageRef.current.contains(
+          e.target
+        )
       ) {
+
         setEditAge(false)
+
       }
 
       if (
         genderRef.current &&
-        !genderRef.current.contains(e.target)
+        !genderRef.current.contains(
+          e.target
+        )
       ) {
+
         setEditGender(false)
+
       }
 
     }
@@ -55,34 +80,44 @@ function Profile() {
     )
 
     return () => {
+
       document.removeEventListener(
         "mousedown",
         handleClickOutside
       )
+
     }
+
   }, [])
 
   const getProfile = async () => {
+
     const {
       data: { user },
     } = await supabase.auth.getUser()
 
     if (!user) {
+
       navigate("/login")
       return
+
     }
 
-    const { data } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("id", user.id)
-      .maybeSingle()
+    const { data } =
+      await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", user.id)
+        .maybeSingle()
 
     setProfile(data)
+
     setLoading(false)
+
   }
 
   const saveProfile = async () => {
+
     const {
       data: { user },
     } = await supabase.auth.getUser()
@@ -91,8 +126,11 @@ function Profile() {
       profile?.avatar_url || ""
 
     if (avatar) {
+
       const fileExt =
-        avatar.name.split(".").pop()
+        avatar.name
+          .split(".")
+          .pop()
 
       const fileName =
         `${Date.now()}.${fileExt}`
@@ -108,6 +146,7 @@ function Profile() {
 
       avatarUrl =
         data.publicUrl
+
     }
 
     await supabase
@@ -124,20 +163,24 @@ function Profile() {
     setEditAge(false)
     setEditGender(false)
 
-    alert("Saved")
   }
 
   const logout = async () => {
+
     await supabase.auth.signOut()
+
     navigate("/login")
+
   }
 
   if (loading) {
+
     return (
       <div className="w-full min-h-screen bg-black flex items-center justify-center text-white text-2xl">
         Loading...
       </div>
     )
+
   }
 
   return (
@@ -152,71 +195,83 @@ function Profile() {
 
       </div>
 
+      {/* Content */}
       <div className="relative z-10 px-6 py-20 max-w-3xl mx-auto flex flex-col items-center">
 
-        {/* Avatar */}
-        <label
-          htmlFor="avatar"
-          className="
-            relative
-            w-52 h-52
-            rounded-full
-            overflow-hidden
-            cursor-pointer
-            group
-          "
-        >
+        {/* Avatar Wrapper */}
+        <div className="w-full flex justify-center">
 
-          <div className="absolute inset-0 bg-white/20 blur-2xl scale-125 opacity-50" />
-
-          {profile?.avatar_url || avatar ? (
-
-            <img
-              src={
-                avatar
-                  ? URL.createObjectURL(avatar)
-                  : profile?.avatar_url
-              }
-              alt="avatar"
-              className="
-                relative z-10
-                w-full h-full object-cover
-                rounded-full
-              "
-            />
-
-          ) : (
-
-            <div
-              className="
-                relative z-10
-                w-full h-full rounded-full
-                bg-white/5
-                flex items-center justify-center
-                text-6xl font-bold
-              "
-            >
-              {profile?.name?.[0]}
-            </div>
-
-          )}
-
-          <div
+          {/* Avatar */}
+          <label
+            htmlFor="avatar"
             className="
-              absolute inset-0
-              bg-black/40
-              opacity-0
-              group-hover:opacity-100
-              transition
-              flex items-center justify-center
-              z-20
-              text-lg
+              relative
+              w-52 h-52
+              rounded-full
+              overflow-hidden
+              cursor-pointer
+              group
+              flex-shrink-0
             "
           >
-            Change
-          </div>
 
-        </label>
+            <div className="absolute inset-0 bg-white/20 blur-2xl scale-125 opacity-50" />
+
+            {profile?.avatar_url || avatar ? (
+
+              <img
+                src={
+                  avatar
+                    ? URL.createObjectURL(
+                      avatar
+                    )
+                    : profile?.avatar_url
+                }
+                alt="avatar"
+                className="
+                  relative z-10
+                  w-full h-full
+                  object-cover
+                  rounded-full
+                "
+              />
+
+            ) : (
+
+              <div
+                className="
+                  relative z-10
+                  w-full h-full
+                  rounded-full
+                  bg-white/5
+                  flex items-center justify-center
+                  text-6xl font-bold
+                "
+              >
+                {profile?.name?.[0]}
+              </div>
+
+            )}
+
+            {/* Hover */}
+            <div
+              className="
+                absolute inset-0
+                bg-black/40
+                opacity-0
+                group-hover:opacity-100
+                transition
+                flex items-center justify-center
+                z-20
+                text-lg
+              "
+            >
+              Change
+            </div>
+
+          </label>
+
+        </div>
 
         <input
           id="avatar"
@@ -233,7 +288,12 @@ function Profile() {
         {/* Name */}
         <div
           ref={nameRef}
-          className="mt-10 flex items-center gap-4 group"
+          className="
+            mt-8
+            flex items-center justify-center gap-4
+            group
+            w-full
+          "
         >
 
           {editName ? (
@@ -241,11 +301,14 @@ function Profile() {
             <>
               <input
                 type="text"
-                value={profile?.name || ""}
+                value={
+                  profile?.name || ""
+                }
                 onChange={(e) =>
                   setProfile({
                     ...(profile || {}),
-                    name: e.target.value,
+                    name:
+                      e.target.value,
                   })
                 }
                 className="
@@ -254,6 +317,7 @@ function Profile() {
                   font-bold
                   outline-none
                   text-center
+                  w-[260px]
                 "
                 autoFocus
               />
@@ -276,7 +340,9 @@ function Profile() {
                 onClick={() =>
                   setEditName(false)
                 }
-                className="cursor-pointer"
+                className="
+                  cursor-pointer
+                "
               >
                 <X size={24} />
               </button>
@@ -285,7 +351,7 @@ function Profile() {
           ) : (
 
             <>
-              <h1 className="text-5xl font-bold">
+              <h1 className="text-5xl font-bold text-center">
                 {profile?.name}
               </h1>
 
@@ -312,14 +378,19 @@ function Profile() {
         </div>
 
         {/* Email */}
-        <p className="text-zinc-500 text-xl mt-5">
+        <p className="text-zinc-500 text-xl mt-5 text-center break-all">
           {profile?.email}
         </p>
 
         {/* Age */}
         <div
           ref={ageRef}
-          className="mt-14 flex items-center gap-4 group"
+          className="
+            mt-8
+            flex items-center justify-center gap-4
+            group
+            w-full
+          "
         >
 
           <p className="text-zinc-500 text-2xl">
@@ -331,17 +402,21 @@ function Profile() {
             <>
               <input
                 type="number"
-                value={profile?.age || ""}
+                value={
+                  profile?.age || ""
+                }
                 onChange={(e) =>
                   setProfile({
                     ...(profile || {}),
-                    age: e.target.value,
+                    age:
+                      e.target.value,
                   })
                 }
                 className="
                   bg-transparent
                   text-3xl
                   outline-none
+                  w-[90px]
                 "
                 autoFocus
               />
@@ -364,7 +439,9 @@ function Profile() {
                 onClick={() =>
                   setEditAge(false)
                 }
-                className="cursor-pointer"
+                className="
+                  cursor-pointer
+                "
               >
                 <X size={24} />
               </button>
@@ -402,7 +479,12 @@ function Profile() {
         {/* Gender */}
         <div
           ref={genderRef}
-          className="mt-12 flex items-center gap-4 group"
+          className="
+            mt-8
+            flex items-center justify-center gap-4
+            group
+            w-full
+          "
         >
 
           <p className="text-zinc-500 text-2xl">
@@ -412,9 +494,13 @@ function Profile() {
           {editGender ? (
 
             <>
-              <div className="flex gap-3">
+              <div className="flex items-center gap-3">
 
-                {["Male", "Female", "Other"].map((item) => (
+                {[
+                  "Male",
+                  "Female",
+                  "Other",
+                ].map((item) => (
 
                   <button
                     key={item}
@@ -425,9 +511,14 @@ function Profile() {
                       })
                     }
                     className={`
-                      px-5 py-3 rounded-full text-base transition cursor-pointer
+                      px-5 py-3
+                      rounded-full
+                      text-base
+                      transition
+                      cursor-pointer
                       ${
-                        profile?.gender === item
+                        profile?.gender ===
+                          item
                           ? "bg-white text-black"
                           : "bg-white/10 text-white"
                       }
@@ -460,7 +551,9 @@ function Profile() {
                 onClick={() =>
                   setEditGender(false)
                 }
-                className="cursor-pointer"
+                className="
+                  cursor-pointer
+                "
               >
                 <X size={24} />
               </button>
@@ -499,8 +592,8 @@ function Profile() {
         <button
           onClick={logout}
           className="
-            mt-20
-            px-10 py-4
+            mt-10
+            px-14 py-4
             rounded-full
             bg-red-500/10
             border border-red-500/20
