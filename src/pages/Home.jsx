@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react"
-import { Link } from "react-router-dom"
+import {useEffect,useState} from "react"
+import {Link} from "react-router-dom"
 
 import supabase from "../lib/supabase"
 
@@ -7,26 +7,25 @@ import songs from "../data/songs"
 
 import SongCard from "../components/SongCard"
 
-function Home() {
+function Home(){
 
-  const [profile, setProfile] =
+  const [profile,setProfile]=
     useState(null)
 
-  const [loggedIn, setLoggedIn] =
+  const [loggedIn,setLoggedIn]=
     useState(false)
 
-  useEffect(() => {
+  useEffect(()=>{
     getProfile()
-  }, [])
+  },[])
 
-  const getProfile = async () => {
+  const getProfile=async()=>{
 
     const {
-      data: { user },
-    } = await supabase.auth.getUser()
+      data:{user},
+    }=await supabase.auth.getUser()
 
-    // Not logged in
-    if (!user) {
+    if(!user){
 
       setLoggedIn(false)
       return
@@ -35,27 +34,26 @@ function Home() {
 
     setLoggedIn(true)
 
-    const { data } =
+    const {data}=
       await supabase
         .from("profiles")
         .select("*")
-        .eq("id", user.id)
+        .eq("id",user.id)
         .single()
 
     setProfile(data)
 
   }
 
-  return (
-    <div className="flex-1 min-h-screen overflow-y-auto bg-black px-5 md:px-10 pt-10 md:pt-14 pb-32">
+  return(
+    <div className="flex-1 min-h-screen overflow-y-auto bg-black px-5 md:px-10 pt-10 md:pt-14 pb-56 md:pb-32">
 
       {/* Top */}
       <div className="flex items-start justify-between mb-12">
 
         <div>
 
-          {/* Show ONLY if logged in */}
-          {loggedIn && (
+          {loggedIn&&(
 
             <p className="text-zinc-500 text-sm uppercase tracking-[5px] mb-3">
               Welcome Back
@@ -69,37 +67,36 @@ function Home() {
 
         </div>
 
-        {/* Profile */}
-        {profile && (
+        {profile&&(
 
           <Link
-            to="/profile"
-            className="cursor-pointer"
+          to="/profile"
+          className="cursor-pointer"
           >
 
-            {profile.avatar_url ? (
+            {profile.avatar_url?(
 
               <img
-                src={profile.avatar_url}
-                alt="profile"
-                className="
-                  w-14 h-14
-                  rounded-full
-                  object-cover
-                  border border-white/10
-                "
+              src={profile.avatar_url}
+              alt="profile"
+              className="
+              w-14 h-14
+              rounded-full
+              object-cover
+              border border-white/10
+              "
               />
 
-            ) : (
+            ):(
 
               <div
-                className="
-                  w-14 h-14
-                  rounded-full
-                  bg-white/10
-                  flex items-center justify-center
-                  text-lg font-semibold
-                "
+              className="
+              w-14 h-14
+              rounded-full
+              bg-white/10
+              flex items-center justify-center
+              text-lg font-semibold
+              "
               >
                 {profile?.name?.[0]}
               </div>
@@ -115,13 +112,13 @@ function Home() {
       {/* Songs */}
       <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-5 md:gap-8">
 
-        {songs.map((song, index) => (
+        {songs.map((song,index)=>(
 
           <SongCard
-            key={song.id}
-            song={song}
-            songs={songs}
-            index={index}
+          key={song.id}
+          song={song}
+          songs={songs}
+          index={index}
           />
 
         ))}
@@ -130,6 +127,7 @@ function Home() {
 
     </div>
   )
+
 }
 
 export default Home
