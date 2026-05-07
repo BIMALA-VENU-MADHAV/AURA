@@ -13,7 +13,7 @@ function Home() {
       <div className="mb-12">
 
         <p className="text-zinc-500 text-sm uppercase tracking-[5px] mb-3">
-          Welcome Back
+          Welcome To
         </p>
 
         <h1 className="text-5xl md:text-7xl font-bold tracking-tight">
