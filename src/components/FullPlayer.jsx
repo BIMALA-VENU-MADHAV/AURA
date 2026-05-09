@@ -1,4 +1,7 @@
-import { motion } from "framer-motion"
+// src/components/FullPlayer.jsx
+
+import { motion, AnimatePresence } from "framer-motion"
+import { useState, useEffect, useRef } from "react"
 
 import {
   Play,
@@ -10,9 +13,40 @@ import {
   Repeat,
   Repeat1,
   Shuffle,
+  Mic2,
+  Disc3,
 } from "lucide-react"
 
 import { usePlayer } from "../context/PlayerContext"
+
+import lyricsMap from "../data/lyrics"
+
+function fmt(s) {
+
+  const secs = Math.floor(s) || 0
+
+  return `${Math.floor(secs / 60)}:${String(
+    secs % 60
+  ).padStart(2, "0")}`
+
+}
+
+function getActiveIndex(
+  lyrics,
+  currentTime
+) {
+
+  return lyrics.findIndex(
+    (line, i) =>
+      currentTime >= line.time &&
+      (
+        !lyrics[i + 1] ||
+        currentTime <
+          lyrics[i + 1].time
+      )
+  )
+
+}
 
 function FullPlayer() {
 
@@ -33,6 +67,11 @@ function FullPlayer() {
     togglePlayMode,
   } = usePlayer()
 
+  const [showLyrics, setShowLyrics] =
+    useState(false)
+
+  const lyricsRef = useRef(null)
+
   const favorite =
     currentSong &&
     isFavorite(currentSong)
@@ -42,209 +81,575 @@ function FullPlayer() {
       ? (currentTime / duration) * 100
       : 0
 
-  if (!isPlayerOpen || !currentSong)
+  const lyrics =
+    lyricsMap[
+      currentSong?.title
+    ] || []
+
+  const activeIdx =
+    getActiveIndex(
+      lyrics,
+      currentTime
+    )
+
+  useEffect(() => {
+
+    setShowLyrics(false)
+
+  }, [currentSong])
+
+  useEffect(() => {
+
+    if (
+      !showLyrics ||
+      activeIdx < 0 ||
+      !lyricsRef.current
+    )
+      return
+
+    const el =
+      lyricsRef.current.querySelector(
+        `[data-idx="${activeIdx}"]`
+      )
+
+    el?.scrollIntoView({
+      block: "center",
+      behavior: "smooth",
+    })
+
+  }, [
+    activeIdx,
+    showLyrics,
+  ])
+
+  if (
+    !isPlayerOpen ||
+    !currentSong
+  )
     return null
 
   return (
-    <motion.div
-      initial={{
-        opacity: 0,
-        y: 100,
-      }}
-      animate={{
-        opacity: 1,
-        y: 0,
-      }}
-      transition={{
-        duration: 0.4,
-      }}
-      className="
-        fixed inset-0 z-50 overflow-hidden
-        bg-gradient-to-br
-        from-purple-900
-        via-black
-        to-pink-900
-      "
-    >
+    <AnimatePresence>
 
-      {/* Blurred Background */}
-      <div
+      <motion.div
+        key="fullplayer"
+        initial={{
+          y: "100%",
+        }}
+        animate={{
+          y: 0,
+        }}
+        exit={{
+          y: "100%",
+        }}
+        transition={{
+          type: "spring",
+          stiffness: 300,
+          damping: 35,
+        }}
         className="
-          absolute inset-0
-          bg-cover bg-center
-          scale-110 blur-3xl
-          opacity-30
+        fixed inset-0 z-50
+        flex flex-col
+        overflow-hidden
+        bg-black
         "
         style={{
-          backgroundImage: `url(${currentSong.image})`,
+          fontFamily:
+            "'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif",
         }}
-      />
+      >
 
-      {/* Overlay */}
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-3xl" />
+        {/* Background */}
+        <div
+          className="
+          absolute inset-0
+          bg-cover bg-center
+          scale-110
+          "
+          style={{
+            backgroundImage:
+              `url(${currentSong.image})`,
+            filter:
+              "blur(60px) brightness(0.35) saturate(1.6)",
+          }}
+        />
 
-      {/* Glow */}
-      <div
-        className="absolute inset-0 opacity-30"
-        style={{
-          background: `
-            radial-gradient(circle at top left, #a855f7, transparent 30%),
-            radial-gradient(circle at bottom right, #ec4899, transparent 30%)
-          `,
-        }}
-      />
+        {/* Overlay */}
+        <div className="absolute inset-0 bg-black/55" />
 
-      {/* Content */}
-      <div className="relative h-full flex flex-col px-8 py-6">
+        {/* Content */}
+        <div className="relative z-10 flex flex-col h-full px-6 pb-10 pt-safe">
 
-        {/* Top */}
-        <div className="flex items-center justify-between">
+          {/* Top */}
+          <div className="flex items-center justify-between pt-4 pb-2">
 
-          <button
-            onClick={() =>
-              setIsPlayerOpen(false)
-            }
-            className="text-white cursor-pointer"
-          >
-            <ChevronDown size={34} />
-          </button>
+            {/* Close */}
+            <button
+              onClick={() =>
+                setIsPlayerOpen(false)
+              }
+              className="
+              w-9 h-9
+              flex items-center justify-center
+              rounded-full
+              bg-white/10
+              active:bg-white/20
+              transition-colors
+              "
+            >
 
-          <p className="text-zinc-300 text-sm tracking-widest uppercase">
-            Now Playing
-          </p>
+              <ChevronDown
+                size={22}
+                className="text-white"
+              />
 
-          <div className="w-[34px]" />
+            </button>
 
-        </div>
+            {/* Title */}
+            <div className="text-center">
 
-        {/* Main */}
-        <div className="flex-1 flex flex-col items-center justify-center">
+              <p className="
+              text-white/40
+              text-[11px]
+              font-semibold
+              uppercase
+              tracking-widest
+              ">
+                Now Playing
+              </p>
 
-          {/* Album */}
-          <motion.img
-            initial={{
-              scale: 0.9,
-              opacity: 0,
-            }}
-            animate={{
-              scale: 1,
-              opacity: 1,
-            }}
-            transition={{
-              duration: 0.4,
-            }}
-            src={currentSong.image}
-            alt={currentSong.title}
-            className="
-              w-80 h-80
-              rounded-[40px]
-              object-cover
-              shadow-2xl
-            "
-          />
+              <p className="
+              text-white/80
+              text-[13px]
+              font-bold
+              tracking-[0.25em]
+              uppercase
+              mt-0.5
+              ">
+                Aura
+              </p>
 
-          {/* Info */}
-          <div className="mt-10 text-center">
+            </div>
 
-            <h1 className="text-4xl font-bold">
-              {currentSong.title}
-            </h1>
+            {/* Lyrics Toggle */}
+            <button
+              onClick={() =>
+                setShowLyrics(
+                  (v) => !v
+                )
+              }
+              className="
+              w-9 h-9
+              flex items-center justify-center
+              rounded-full
+              bg-white/10
+              active:bg-white/20
+              transition-colors
+              "
+            >
 
-            <p className="text-zinc-300 text-xl mt-3">
-              {currentSong.artist}
-            </p>
+              {showLyrics ? (
+
+                <Disc3
+                  size={18}
+                  className="text-white"
+                />
+
+              ) : (
+
+                <Mic2
+                  size={18}
+                  className="text-white"
+                />
+
+              )}
+
+            </button>
+
+          </div>
+
+          {/* Center */}
+          <div className="
+          flex-1
+          flex flex-col
+          items-center justify-center
+          min-h-0
+          mt-2
+          ">
+
+            <AnimatePresence mode="wait">
+
+              {/* Album */}
+              {!showLyrics && (
+
+                <motion.div
+                  key="art"
+                  initial={{
+                    opacity: 0,
+                    scale: 0.9,
+                  }}
+                  animate={{
+                    opacity: 1,
+                    scale: 1,
+                  }}
+                  exit={{
+                    opacity: 0,
+                    scale: 0.9,
+                  }}
+                  transition={{
+                    duration: 0.28,
+                  }}
+                  className="
+                  w-full
+                  flex justify-center
+                  "
+                >
+
+                  <div className="relative">
+
+                    {/* Glow */}
+                    <div
+                      className="
+                      absolute -inset-3
+                      rounded-[36px]
+                      opacity-60
+                      blur-2xl
+                      "
+                      style={{
+                        backgroundImage:
+                          `url(${currentSong.image})`,
+                        backgroundSize:
+                          "cover",
+                        backgroundPosition:
+                          "center",
+                      }}
+                    />
+
+                    {/* Album Image */}
+                    <motion.img
+                      src={
+                        currentSong.image
+                      }
+                      alt={
+                        currentSong.title
+                      }
+                      animate={{
+                        scale:
+                          isPlaying
+                            ? 1
+                            : 0.92,
+                      }}
+                      transition={{
+                        duration: 0.5,
+                      }}
+                      className="
+                      relative z-10
+                      w-72 h-72
+                      sm:w-80 sm:h-80
+                      rounded-[32px]
+                      object-cover
+                      shadow-2xl
+                      "
+                    />
+
+                  </div>
+
+                </motion.div>
+
+              )}
+
+              {/* Lyrics */}
+              {showLyrics && (
+
+                <motion.div
+                  key="lyrics"
+                  initial={{
+                    opacity: 0,
+                    y: 16,
+                  }}
+                  animate={{
+                    opacity: 1,
+                    y: 0,
+                  }}
+                  exit={{
+                    opacity: 0,
+                    y: 16,
+                  }}
+                  transition={{
+                    duration: 0.28,
+                  }}
+                  className="
+                  w-full
+                  flex justify-center
+                  "
+                >
+
+                  {lyrics.length === 0 ? (
+
+                    <p className="
+                    text-white/30
+                    text-xl
+                    font-semibold
+                    text-center
+                    ">
+                      No lyrics available
+                    </p>
+
+                  ) : (
+
+                    <div
+                      ref={lyricsRef}
+                      className="
+                      w-full max-w-sm
+                      h-72 sm:h-80
+                      overflow-y-auto
+                      px-4
+                      no-scrollbar
+                      "
+                      style={{
+                        maskImage:
+                          "linear-gradient(to bottom, transparent 0%, black 18%, black 82%, transparent 100%)",
+                      }}
+                    >
+
+                      <div className="
+                      py-24
+                      space-y-5
+                      text-center
+                      ">
+
+                        {lyrics.map(
+                          (
+                            line,
+                            i
+                          ) => {
+
+                            const dist =
+                              Math.abs(
+                                i -
+                                  activeIdx
+                              )
+
+                            const active =
+                              i ===
+                              activeIdx
+
+                            return (
+
+                              <motion.p
+                                key={i}
+                                data-idx={
+                                  i
+                                }
+                                animate={{
+                                  opacity:
+                                    dist ===
+                                    0
+                                      ? 1
+                                      : dist ===
+                                        1
+                                      ? 0.38
+                                      : 0.14,
+
+                                  scale:
+                                    active
+                                      ? 1.04
+                                      : 1,
+                                }}
+                                transition={{
+                                  duration: 0.3,
+                                }}
+                                className={`
+                                text-2xl sm:text-3xl
+                                font-bold
+                                leading-snug
+                                tracking-tight
+                                break-words
+                                transition-colors
+                                ${
+                                  active
+                                    ? "text-white"
+                                    : "text-white/60"
+                                }
+                                `}
+                              >
+
+                                {line.text}
+
+                              </motion.p>
+
+                            )
+
+                          }
+                        )}
+
+                      </div>
+
+                    </div>
+
+                  )}
+
+                </motion.div>
+
+              )}
+
+            </AnimatePresence>
+
+          </div>
+
+          {/* Song Info */}
+          <div className="
+          flex items-center
+          justify-between
+          mt-6
+          px-1
+          ">
+
+            <div className="
+            flex-1 min-w-0
+            pr-4
+            ">
+
+              <h1 className="
+              text-white
+              text-xl
+              font-bold
+              tracking-tight
+              truncate
+              ">
+                {currentSong.title}
+              </h1>
+
+              <p className="
+              text-white/50
+              text-[15px]
+              font-medium
+              mt-0.5
+              truncate
+              ">
+                {currentSong.artist}
+              </p>
+
+            </div>
+
+            {/* Favorite */}
+            <button
+              onClick={() =>
+                toggleFavorite(
+                  currentSong
+                )
+              }
+              className="
+              flex-shrink-0
+              w-9 h-9
+              flex items-center justify-center
+              "
+            >
+
+              <Heart
+                size={24}
+                className={`
+                transition-all
+                ${
+                  favorite
+                    ? "text-white fill-white scale-110"
+                    : "text-white/40"
+                }
+                `}
+              />
+
+            </button>
 
           </div>
 
           {/* Progress */}
-          <div className="w-full max-w-xl mt-10">
+          <div className="mt-5 px-1">
 
-            <div
-              className="
-                relative w-full h-[7px]
-                bg-white/10
-                rounded-full
-                overflow-visible
-              "
-            >
+            <div className="
+            relative
+            h-1
+            bg-white/15
+            rounded-full
+            ">
 
-              {/* Progress Fill */}
-              <motion.div
-                animate={{
-                  width: `${progress}%`,
-                }}
-                transition={{
-                  ease: "easeOut",
-                  duration: 0.15,
-                }}
+              {/* Fill */}
+              <div
                 className="
-                  absolute left-0 top-0
-                  h-full
-                  bg-white
-                  rounded-full
+                absolute left-0 top-0
+                h-full
+                bg-white
+                rounded-full
+                pointer-events-none
                 "
-              >
+                style={{
+                  width:
+                    `${progress}%`,
+                }}
+              />
 
-                {/* Dot */}
-                <motion.div
-                  animate={{
-                    scale: [1, 1.15, 1],
-                  }}
-                  transition={{
-                    repeat: Infinity,
-                    duration: 2,
-                    ease: "easeInOut",
-                  }}
-                  className="
-                    absolute right-0 top-1/2
-                    -translate-y-1/2
-                    w-5 h-5
-                    bg-white
-                    rounded-full
-                    shadow-[0_0_25px_rgba(255,255,255,0.95)]
-                  "
-                />
-
-              </motion.div>
+              {/* Dot */}
+              <div
+                className="
+                absolute top-1/2
+                -translate-y-1/2
+                w-3 h-3
+                bg-white
+                rounded-full
+                shadow
+                pointer-events-none
+                "
+                style={{
+                  left:
+                    `calc(${progress}% - 6px)`,
+                }}
+              />
 
               {/* Seek */}
               <input
                 type="range"
-                min="0"
-                max={duration || 0}
+                min={0}
+                max={
+                  duration || 0
+                }
+                step={0.1}
                 value={currentTime}
                 onChange={(e) =>
-                  seekSong(e.target.value)
+                  seekSong(
+                    Number(
+                      e.target.value
+                    )
+                  )
                 }
                 className="
-                  absolute inset-0
-                  w-full h-full
-                  opacity-0
-                  cursor-pointer
+                absolute inset-0
+                w-full h-full
+                opacity-0
+                cursor-pointer
                 "
               />
 
             </div>
 
             {/* Time */}
-            <div className="flex justify-between text-sm text-zinc-400 mt-4">
+            <div className="
+            flex justify-between
+            mt-2
+            ">
 
-              <span>
-                {Math.floor(currentTime / 60)}:
-                {String(
-                  Math.floor(
-                    currentTime % 60
-                  )
-                ).padStart(2, "0")}
+              <span className="
+              text-white/40
+              text-xs
+              tabular-nums
+              ">
+                {fmt(currentTime)}
               </span>
 
-              <span>
-                {Math.floor(duration / 60)}:
-                {String(
-                  Math.floor(
-                    duration % 60
-                  )
-                ).padStart(2, "0")}
+              <span className="
+              text-white/40
+              text-xs
+              tabular-nums
+              ">
+                {fmt(duration)}
               </span>
 
             </div>
@@ -252,27 +657,48 @@ function FullPlayer() {
           </div>
 
           {/* Controls */}
-          <div className="flex items-center gap-10 mt-12">
+          <div className="
+          flex items-center
+          justify-between
+          mt-6
+          px-2
+          ">
 
-            {/* Favorite */}
+            {/* Repeat */}
             <button
-              onClick={() =>
-                toggleFavorite(currentSong)
+              onClick={
+                togglePlayMode
               }
               className="
-                text-white
-                cursor-pointer
+              w-10 h-10
+              flex items-center justify-center
               "
             >
 
-              <Heart
-                size={30}
-                fill={
-                  favorite
-                    ? "white"
-                    : "transparent"
-                }
-              />
+              {playMode ===
+              "repeat-one" ? (
+
+                <Repeat1
+                  size={22}
+                  className="text-white"
+                />
+
+              ) : playMode ===
+                "repeat-all" ? (
+
+                <Repeat
+                  size={22}
+                  className="text-white"
+                />
+
+              ) : (
+
+                <Shuffle
+                  size={22}
+                  className="text-white/50"
+                />
+
+              )}
 
             </button>
 
@@ -280,80 +706,102 @@ function FullPlayer() {
             <button
               onClick={prevSong}
               className="
-                text-white
-                cursor-pointer
+              w-12 h-12
+              flex items-center justify-center
+              active:scale-90
+              transition-transform
               "
             >
-              <SkipBack size={38} />
+
+              <SkipBack
+                size={32}
+                className="
+                text-white
+                fill-white
+                "
+              />
+
             </button>
 
             {/* Play */}
-            <button
+            <motion.button
               onClick={togglePlay}
+              whileTap={{
+                scale: 0.92,
+              }}
               className="
-                bg-white text-black
-                w-20 h-20 rounded-full
-                flex items-center justify-center
-                shadow-2xl
-                cursor-pointer
+              w-16 h-16
+              rounded-full
+              bg-white
+              flex items-center justify-center
+              shadow-lg
               "
             >
 
               {isPlaying ? (
-                <Pause size={34} />
-              ) : (
-                <Play
-                  size={34}
-                  className="ml-1"
+
+                <Pause
+                  size={28}
+                  className="
+                  text-black
+                  fill-black
+                  "
                 />
+
+              ) : (
+
+                <Play
+                  size={28}
+                  className="
+                  text-black
+                  fill-black
+                  ml-1
+                  "
+                />
+
               )}
 
-            </button>
+            </motion.button>
 
             {/* Next */}
             <button
               onClick={nextSong}
               className="
-                text-white
-                cursor-pointer
+              w-12 h-12
+              flex items-center justify-center
+              active:scale-90
+              transition-transform
               "
             >
-              <SkipForward size={38} />
+
+              <SkipForward
+                size={32}
+                className="
+                text-white
+                fill-white
+                "
+              />
+
             </button>
 
-            {/* Repeat / Shuffle */}
+            {/* Empty */}
             <button
-              onClick={togglePlayMode}
               className="
-                text-white
-                cursor-pointer
+              w-10 h-10
+              opacity-0
+              pointer-events-none
               "
-            >
-
-              {playMode === "repeat-one" ? (
-
-                <Repeat1 size={28} />
-
-              ) : playMode === "repeat-all" ? (
-
-                <Repeat size={28} />
-
-              ) : (
-
-                <Shuffle size={28} />
-
-              )}
-
-            </button>
+            />
 
           </div>
 
         </div>
 
-      </div>
+      </motion.div>
 
-    </motion.div>
+    </AnimatePresence>
   )
+
 }
 
 export default FullPlayer

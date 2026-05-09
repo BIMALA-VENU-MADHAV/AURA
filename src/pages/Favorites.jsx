@@ -22,6 +22,7 @@ function Favorites(){
     getProfile()
   },[])
 
+  
   const getProfile=async()=>{
 
     const {
